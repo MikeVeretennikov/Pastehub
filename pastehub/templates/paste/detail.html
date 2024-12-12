@@ -49,6 +49,19 @@
             </a>
           {% endif %}
 
+          <button class="btn btn-sm btn-dark dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            История изменений
+          </button>
+          
+          <ul class="dropdown-menu">
+            {% for old_paste in paste.versions.all %}
+              <a class="dropdown-item" href="{% url 'paste:version-detail' short_link=paste.short_link version=old_paste.version%}">
+                Версия пасты: {{ old_paste.version }}, Дата: {{ old_paste.updated }}
+              </a>
+            {% endfor %}
+          </ul>
+
+
           <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-download" viewBox="0 0 16 16">
               <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5"/>
@@ -56,6 +69,7 @@
             </svg>
             Экспорт
           </button>
+
           <ul class="dropdown-menu">
             <a class="dropdown-item" href="{% url 'export:source' paste.short_link %}" download role="button">
               Исходный формат

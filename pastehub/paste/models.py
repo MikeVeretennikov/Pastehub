@@ -109,6 +109,57 @@ class Paste(BasePasteModel):
         verbose_name = "паста"
         verbose_name_plural = "пасты"
 
+    def save(self, *args, **kwargs):
+        if self.pk is not None:
+            last_version = (
+                PasteVersion.objects.filter(paste=self)
+                .order_by("-updated")
+                .first()
+            )
+            next_version = last_version.version + 1 if last_version else 1
+        else:
+            next_version = 1
+
+        if not self.short_link:
+            self.short_link = generate_short_link()
+
+        super().save(*args, **kwargs)
+
+        PasteVersion.objects.create(
+            paste=self,
+            version=next_version,
+            title=self.title,
+            short_link=self.short_link,
+        )
+
+
+class PasteVersion(models.Model):
+    paste = models.ForeignKey(
+        Paste,
+        on_delete=models.CASCADE,
+        verbose_name="паста",
+        related_name="versions",
+    )
+    version = models.IntegerField(verbose_name="номер версии")
+    title = models.CharField(
+        max_length=150,
+        verbose_name="заголовок",
+        help_text="Максимальная длинна 150 символов",
+    )
+    short_link = models.CharField(
+        max_length=10,
+        unique=False,
+        verbose_name="короткая ссылка",
+    )
+    updated = models.DateTimeField(auto_now=True, verbose_name="обновлён")
+
+    class Meta:
+        verbose_name = "версия пасты"
+        verbose_name_plural = "версии паст"
+
+    def __str__(self):
+        return f"{self.paste.title} - Версия {self.version}"
+
 
 class ProtectedPaste(BasePasteModel):
     password = models.CharField(max_length=255, verbose_name="ключ шифрования")
