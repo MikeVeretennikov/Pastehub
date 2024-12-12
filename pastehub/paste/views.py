@@ -50,14 +50,14 @@ def edit(request, short_link):
         content = form.cleaned_data.get("content")
         clear_content = content.replace("\r\n", "\n").strip()
 
-        current_version = (
+        last_version = (
             PasteVersion.objects.filter(paste=paste)
             .order_by("-updated")
             .first()
         )
 
         upload_to_storage(
-            f"pastes_version/{paste.id}_{current_version + 1}", content,
+            f"pastes_version/{paste.id}_{last_version.version + 1}", content,
         )
         delete_from_storage(f"pastes/{paste.id}")
         upload_to_storage(f"pastes/{paste.id}", clear_content)
