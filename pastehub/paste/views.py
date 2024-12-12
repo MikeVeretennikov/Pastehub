@@ -7,7 +7,7 @@ from core.storage import (
     upload_to_storage,
 )
 from paste.forms import GetPasswordForm, PasteForm, ProtectedPasteForm
-from paste.models import Paste, ProtectedPaste
+from paste.models import Paste, PasteVersion, ProtectedPaste
 
 
 def create(request):
@@ -25,6 +25,7 @@ def create(request):
         uploaded = upload_to_storage(f"pastes/{instance.id}", clear_content)
         if uploaded:
             instance.save()
+            upload_to_storage(f"pastes_version/{instance.id}_1", clear_content)
 
         return redirect("paste:detail", short_link=instance.short_link)
 
@@ -48,6 +49,16 @@ def edit(request, short_link):
     if form.is_valid() and request.POST:
         content = form.cleaned_data.get("content")
         clear_content = content.replace("\r\n", "\n").strip()
+
+        current_version = (
+            PasteVersion.objects.filter(paste=paste)
+            .order_by("-updated")
+            .first()
+        )
+
+        upload_to_storage(
+            f"pastes_version/{paste.id}_{current_version + 1}", content,
+        )
         delete_from_storage(f"pastes/{paste.id}")
         upload_to_storage(f"pastes/{paste.id}", clear_content)
 
@@ -62,8 +73,28 @@ def edit(request, short_link):
     )
 
 
-def detail(request, short_link):
+def detail(request, short_link, version=None):
     paste = get_object_or_404(Paste, short_link=short_link)
+    paste_uuid = paste.id
+
+    if version:
+        old_paste = (
+            PasteVersion.objects.filter(paste=paste)
+            .order_by("-updated")
+            .first()
+        )
+        content = get_from_storage(f"pastes_version/{paste_uuid}_{version}")
+
+        return render(
+            request=request,
+            template_name="paste/detail.html",
+            context={
+                "paste": paste,
+                "old_paste": old_paste,
+                "content": content,
+            },
+        )
+
     content = get_from_storage(f"pastes/{paste.id}")
 
     return render(

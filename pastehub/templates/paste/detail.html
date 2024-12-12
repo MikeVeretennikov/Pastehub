@@ -24,9 +24,23 @@
             <a class="btn btn-sm btn-primary" href="{% url 'paste:edit' paste.short_link %}">Редактировать</a>
           {% endif %}
 
+          <button class="btn btn-sm btn-dark dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            История изменений
+          </button>
+          
+          <ul class="dropdown-menu">
+            {% for old_paste in paste.versions.all %}
+              <a class="dropdown-item" href="{% url 'paste:version-detail' short_link=paste.short_link version=old_paste.version%}">
+                Версия пасты: {{ old_paste.version }}, Дата: {{ old_paste.updated }}
+              </a>
+            {% endfor %}
+          </ul>
+
+
           <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
             Экспорт
           </button>
+
           <ul class="dropdown-menu">
             <a class="dropdown-item" href="{% url 'export:source' paste.short_link %}" download role="button">
               Исходный формат
