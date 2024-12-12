@@ -19,7 +19,9 @@ urlpatterns = [
     path("", views.create, name="create"),
     path("<str:short_link>/", views.detail, name="detail"),
     path(
-        "<str:short_link>/<int:version>/", views.detail, name="version-detail",
+        "<str:short_link>/<int:version>/",
+        views.detail,
+        name="version-detail",
     ),
     path("<str:short_link>/delete/", views.delete, name="delete"),
     path("<str:short_link>/edit/", views.edit, name="edit"),
