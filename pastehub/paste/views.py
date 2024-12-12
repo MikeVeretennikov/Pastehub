@@ -1,3 +1,6 @@
+import os
+import re
+
 from django.shortcuts import get_object_or_404, redirect, render
 
 from core.crypto import AESEncryption
@@ -57,7 +60,8 @@ def edit(request, short_link):
         )
 
         upload_to_storage(
-            f"pastes_version/{paste.id}_{last_version.version + 1}", content,
+            f"pastes_version/{paste.id}_{last_version.version + 1}",
+            content,
         )
         delete_from_storage(f"pastes/{paste.id}")
         upload_to_storage(f"pastes/{paste.id}", clear_content)
@@ -111,6 +115,15 @@ def delete(request, short_link):
         return redirect("paste:detail", short_link=short_link)
 
     delete_from_storage(f"pastes/{paste.id}")
+
+    directory = "media/pastes_version/"
+    regex = re.compile(f"{paste.id}_?[0-9]+")
+
+    for filename in os.listdir(directory):
+        if regex.match(filename):
+            print(filename)
+            delete_from_storage(f"pastes_version/{filename}")
+
     paste.delete()
 
     return redirect("paste:create")
