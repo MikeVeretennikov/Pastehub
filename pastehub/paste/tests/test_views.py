@@ -43,7 +43,8 @@ class TestViews(TestCase):
 
         # Проверяем, что создалась паста в pastes/ и pastes_version/
         self.assertEqual(
-            len(os.listdir(settings.BASE_DIR / "media_test/pastes/")), 2,
+            len(os.listdir(settings.BASE_DIR / "media_test/pastes/")),
+            2,
         )
         self.assertEqual(
             len(os.listdir(settings.BASE_DIR / "media_test/pastes_version/")),

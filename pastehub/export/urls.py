@@ -7,7 +7,9 @@ app_name = "export"
 
 urlpatterns = [
     path(
-        "<str:short_link>/<int:version>/source", export_source, name="source",
+        "<str:short_link>/<int:version>/source",
+        export_source,
+        name="source",
     ),
     path("<str:short_link>/<int:version>/json", export_json, name="json"),
     path("<str:short_link>/<int:version>/docx", export_docx, name="docx"),
