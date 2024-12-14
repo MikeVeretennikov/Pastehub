@@ -35,20 +35,21 @@
               </a>
             {% endfor %}
           </ul>
-
+          
 
           <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
             Экспорт
           </button>
 
           <ul class="dropdown-menu">
-            <a class="dropdown-item" href="{% url 'export:source' paste.short_link %}" download role="button">
+
+            <a class="dropdown-item" href="{% url 'export:source' paste.short_link version %}" download role="button">
               Исходный формат
             </a>
-            <a class="dropdown-item" href="{% url 'export:json' paste.short_link %}" download role="button">
+            <a class="dropdown-item" href="{% url 'export:json' paste.short_link version %}" download role="button">
               JSON
             </a>
-            <a class="dropdown-item" href="{% url 'export:docx' paste.short_link %}" download role="button">
+            <a class="dropdown-item" href="{% url 'export:docx' paste.short_link version %}" download role="button">
               DOCX
             </a>
           </ul>
@@ -107,13 +108,13 @@
           Выберите формат файла
         </div>
         <div class="modal-footer">
-          <a class="btn btn-outline-primary" href="{% url 'export:source' paste.id %}" download role="button">
+          <a class="btn btn-outline-primary" href="{% url 'export:source' paste.id version %}" download role="button">
             Исходный формат
           </a>
-          <a class="btn btn-outline-warning" href="{% url 'export:json' paste.id %}" download role="button">
+          <a class="btn btn-outline-warning" href="{% url 'export:json' paste.id version %}" download role="button">
             JSON
           </a>
-          <a class="btn btn-outline-info" href="{% url 'export:docx' paste.id %}" download role="button">
+          <a class="btn btn-outline-info" href="{% url 'export:docx' paste.id version %}" download role="button">
             DOCX
           </a>
         </div>
