@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container p-3">
+    <div class="container d-flex justify-content-center mt-5">
+            <h3>Результаты поиска</h3>
+        </div>
+    </div>
+    {% if page_obj %}
+    <div class="container d-flex justify-content-center mt-5">
+        <table class="table table-bordered table-striped">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Название</th>
+                    <th>Создан</th>
+                    <th>Истекает</th>
+                    <th>Категория</th>
+                    <th>Просмотры</th>
+                    <th>Комментарии</th>
+                    <th>Syntax</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for paste in page_obj %}
+                <tr>
+                    <td><a href="{% url 'paste:detail' paste.short_link %}">{{ paste.title }}</a></td>
+                    <td>{{ paste.created }}</td>
+                    <td>TODO</td>
+                    <td>{{ paste.category }}</td>
+                    <td>TODO</td>
+                    <td>TODO</td>
+                    <td>TODO</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else%}
+    <div class="container d-flex justify-content-center mt-5">
+        <h5>Ничего не найдено...😞</h5>
+    </div>
+    {% endif %}
+    {% if page_obj.has_other_pages %}
+    <div class="container d-flex justify-content-center mt-5">
+        <nav aria-label="Page navigation">
+            <ul class="pagination">
+                {% if page_obj.has_previous %}
+                    <li class="page-item"><a class="page-link" href="?q={{query}}&page={{page_obj.previous_page_number}}">Предыдущая</a></li>
+                {% endif %}
+                {% for index_page in list_pages %}
+                    <li class={% if index_page == page_obj.number %}"page-item active" aria-current="page"{% else %}"page-item"{% endif %}><a class="page-link" href="?q={{query}}&page={{index_page}}">{{index_page}}</a></li>
+                {% endfor%}
+                {% if page_obj.has_next %}
+                    <li class="page-item"><a class="page-link" href="?q={{query}}&page={{page_obj.next_page_number}}">Следующая</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+    {% endif %}
+    </div>
+</div>
+
+{% endblock %}

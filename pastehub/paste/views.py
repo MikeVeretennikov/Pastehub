@@ -1,3 +1,9 @@
+import os
+
+from django.conf import settings
+from django.core.paginator import Paginator
+from django.db.models import Q
+from django.http import HttpResponseNotFound
 from django.shortcuts import get_object_or_404, redirect, render
 
 from core.crypto import AESEncryption
@@ -6,6 +12,7 @@ from core.storage import (
     get_from_storage,
     upload_to_storage,
 )
+from core.utils import search_in_file
 from paste.forms import GetPasswordForm, PasteForm, ProtectedPasteForm
 from paste.models import Paste, PasteVersion, ProtectedPaste
 
@@ -247,6 +254,48 @@ def delete_protected(request, short_link):
         request=request,
         template_name="paste/get_password.html",
         context={"form": form},
+    )
+
+
+def search(request):
+    query = request.GET.get("q", "").strip()
+    page = request.GET.get("page")
+    if str(page).isdigit():
+        page = int(page)
+    else:
+        return HttpResponseNotFound("Page is not integer")
+
+    if query:
+        directory = settings.MEDIA_ROOT / "pastes/"
+        pastes_list = []
+        for id_paste in os.listdir(directory):
+            if search_in_file(os.path.join(directory, id_paste), query):
+                pastes_list.append(id_paste)
+
+        object_list = (
+            Paste.objects.all()
+            .filter(
+                Q(title__icontains=query)
+                | Q(category__name__icontains=query)
+                | Q(id__in=pastes_list),
+                is_published=True,
+            )
+            .prefetch_related("category")
+        )
+        order_by_object_list = object_list.order_by("created")
+    else:
+        order_by_object_list = []
+
+    paginator = Paginator(order_by_object_list, 25)
+    page_obj = paginator.get_page(page)
+    return render(
+        request=request,
+        template_name="paste/search_results.html",
+        context={
+            "query": query,
+            "list_pages": list(paginator.page_range),
+            "page_obj": page_obj,
+        },
     )
 
 

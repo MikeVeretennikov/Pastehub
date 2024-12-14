@@ -15,7 +15,7 @@
     <div class="wrapper">
     {% block clean_content %}
       {% include 'includes/header.html' %}
-      <main>
+      <main class="container">
         {% block content %}Контента не будет{% endblock %}
         <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
       </main>

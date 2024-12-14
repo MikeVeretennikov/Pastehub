@@ -22,8 +22,9 @@
             <li><a href="#" class="nav-link px-2 link-body-emphasis">Ответы на вопросы</a></li>
           </ul>
         {% endwith %}
-        <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
-          <input type="search" class="form-control" placeholder="Поиск..." aria-label="Поиск">
+        <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search" action="{% url 'paste:search' %}" method="get">
+          <input type="text" name="q" class="form-control" placeholder="Поиск..." aria-label="Поиск">
+          <input type="hidden" name="page" class="form-control" value="1">
         </form>
         {% if request.user.is_authenticated %}
           <div class="dropdown text-end">

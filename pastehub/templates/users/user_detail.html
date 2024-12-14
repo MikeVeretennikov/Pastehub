@@ -45,7 +45,7 @@
 
                 {% for paste in pastes %}
                     <tr>
-                    <td>{{ paste.title }}</td>
+                    <td><a href="{% url 'paste:detail' paste.short_link %}">{{ paste.title }}</a></td>
                     <td>{{ paste.created }}</td>
                     <td>TODO</td>
                     <td>{{ paste.category }}</td>
