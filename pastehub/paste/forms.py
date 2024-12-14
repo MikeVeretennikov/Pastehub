@@ -65,4 +65,4 @@ class GetPasswordForm(forms.Form):
     )
 
 
-__all__ = ["GetPasswordForm", "PasteForm"]
+__all__ = ["GetPasswordForm", "PasteForm", "ProtectedPasteForm"]

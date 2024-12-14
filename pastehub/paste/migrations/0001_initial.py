@@ -17,67 +17,259 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Category',
+            name="Category",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(help_text='Максимальная длинна 150 символов', max_length=150, unique=True, verbose_name='категория')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "name",
+                    models.CharField(
+                        help_text="Максимальная длинна 150 символов",
+                        max_length=150,
+                        unique=True,
+                        verbose_name="категория",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'категория',
-                'verbose_name_plural': 'категории',
+                "verbose_name": "категория",
+                "verbose_name_plural": "категории",
             },
         ),
         migrations.CreateModel(
-            name='Paste',
+            name="Paste",
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('title', models.CharField(help_text='Максимальная длинна 150 символов', max_length=150, verbose_name='заголовок')),
-                ('short_link', models.CharField(max_length=10, unique=True, verbose_name='короткая ссылка')),
-                ('expired_duration', models.DurationField(blank=True, choices=[(None, 'Бессрочно'), (datetime.timedelta(seconds=600), '10 минут'), (datetime.timedelta(seconds=3600), '1 час'), (datetime.timedelta(days=1), '1 день'), (datetime.timedelta(days=5), '5 дней'), (datetime.timedelta(days=10), '10 дней'), (datetime.timedelta(days=30), '30 дней')], default=None, null=True, verbose_name='срок существования пасты')),
-                ('expired_date', models.DateTimeField(blank=True, null=True, verbose_name='дата уничтожения пасты')),
-                ('created', models.DateTimeField(auto_now_add=True, verbose_name='создана')),
-                ('is_published', models.BooleanField(default=True, verbose_name='опубликовать')),
-                ('is_blocked', models.BooleanField(default=False, verbose_name='заблокировать')),
-                ('updated', models.DateTimeField(auto_now=True, verbose_name='обновлён')),
-                ('author', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='pastes', related_query_name='paste', to=settings.AUTH_USER_MODEL, verbose_name='автор')),
-                ('category', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='pastes', related_query_name='paste', to='paste.category', verbose_name='категория')),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                    ),
+                ),
+                (
+                    "title",
+                    models.CharField(
+                        help_text="Максимальная длинна 150 символов",
+                        max_length=150,
+                        verbose_name="заголовок",
+                    ),
+                ),
+                (
+                    "short_link",
+                    models.CharField(
+                        max_length=10,
+                        unique=True,
+                        verbose_name="короткая ссылка",
+                    ),
+                ),
+                (
+                    "expired_duration",
+                    models.DurationField(
+                        blank=True,
+                        choices=[
+                            (None, "Бессрочно"),
+                            (datetime.timedelta(seconds=600), "10 минут"),
+                            (datetime.timedelta(seconds=3600), "1 час"),
+                            (datetime.timedelta(days=1), "1 день"),
+                            (datetime.timedelta(days=5), "5 дней"),
+                            (datetime.timedelta(days=10), "10 дней"),
+                            (datetime.timedelta(days=30), "30 дней"),
+                        ],
+                        default=None,
+                        null=True,
+                        verbose_name="срок существования пасты",
+                    ),
+                ),
+                (
+                    "expired_date",
+                    models.DateTimeField(
+                        blank=True,
+                        null=True,
+                        verbose_name="дата уничтожения пасты",
+                    ),
+                ),
+                (
+                    "created",
+                    models.DateTimeField(
+                        auto_now_add=True, verbose_name="создана"
+                    ),
+                ),
+                (
+                    "is_published",
+                    models.BooleanField(
+                        default=True, verbose_name="опубликовать"
+                    ),
+                ),
+                (
+                    "is_blocked",
+                    models.BooleanField(
+                        default=False, verbose_name="заблокировать"
+                    ),
+                ),
+                (
+                    "updated",
+                    models.DateTimeField(
+                        auto_now=True, verbose_name="обновлён"
+                    ),
+                ),
+                (
+                    "author",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="pastes",
+                        related_query_name="paste",
+                        to=settings.AUTH_USER_MODEL,
+                        verbose_name="автор",
+                    ),
+                ),
+                (
+                    "category",
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="pastes",
+                        related_query_name="paste",
+                        to="paste.category",
+                        verbose_name="категория",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'паста',
-                'verbose_name_plural': 'пасты',
+                "verbose_name": "паста",
+                "verbose_name_plural": "пасты",
             },
         ),
         migrations.CreateModel(
-            name='ProtectedPaste',
+            name="ProtectedPaste",
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('title', models.CharField(help_text='Максимальная длинна 150 символов', max_length=150, verbose_name='заголовок')),
-                ('short_link', models.CharField(max_length=10, unique=True, verbose_name='короткая ссылка')),
-                ('expired_duration', models.DurationField(blank=True, choices=[(None, 'Бессрочно'), (datetime.timedelta(seconds=600), '10 минут'), (datetime.timedelta(seconds=3600), '1 час'), (datetime.timedelta(days=1), '1 день'), (datetime.timedelta(days=5), '5 дней'), (datetime.timedelta(days=10), '10 дней'), (datetime.timedelta(days=30), '30 дней')], default=None, null=True, verbose_name='срок существования пасты')),
-                ('expired_date', models.DateTimeField(blank=True, null=True, verbose_name='дата уничтожения пасты')),
-                ('created', models.DateTimeField(auto_now_add=True, verbose_name='создана')),
-                ('password', models.CharField(max_length=255, verbose_name='ключ шифрования')),
-                ('salt', models.BinaryField(verbose_name='соль')),
-                ('nonce', models.BinaryField(verbose_name='nonce')),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                    ),
+                ),
+                (
+                    "title",
+                    models.CharField(
+                        help_text="Максимальная длинна 150 символов",
+                        max_length=150,
+                        verbose_name="заголовок",
+                    ),
+                ),
+                (
+                    "short_link",
+                    models.CharField(
+                        max_length=10,
+                        unique=True,
+                        verbose_name="короткая ссылка",
+                    ),
+                ),
+                (
+                    "expired_duration",
+                    models.DurationField(
+                        blank=True,
+                        choices=[
+                            (None, "Бессрочно"),
+                            (datetime.timedelta(seconds=600), "10 минут"),
+                            (datetime.timedelta(seconds=3600), "1 час"),
+                            (datetime.timedelta(days=1), "1 день"),
+                            (datetime.timedelta(days=5), "5 дней"),
+                            (datetime.timedelta(days=10), "10 дней"),
+                            (datetime.timedelta(days=30), "30 дней"),
+                        ],
+                        default=None,
+                        null=True,
+                        verbose_name="срок существования пасты",
+                    ),
+                ),
+                (
+                    "expired_date",
+                    models.DateTimeField(
+                        blank=True,
+                        null=True,
+                        verbose_name="дата уничтожения пасты",
+                    ),
+                ),
+                (
+                    "created",
+                    models.DateTimeField(
+                        auto_now_add=True, verbose_name="создана"
+                    ),
+                ),
+                (
+                    "password",
+                    models.CharField(
+                        max_length=255, verbose_name="ключ шифрования"
+                    ),
+                ),
+                ("salt", models.BinaryField(verbose_name="соль")),
+                ("nonce", models.BinaryField(verbose_name="nonce")),
             ],
             options={
-                'verbose_name': 'зашифрованная паста',
-                'verbose_name_plural': 'зашифрованные пасты',
+                "verbose_name": "зашифрованная паста",
+                "verbose_name_plural": "зашифрованные пасты",
             },
         ),
         migrations.CreateModel(
-            name='PasteVersion',
+            name="PasteVersion",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('version', models.IntegerField(verbose_name='номер версии')),
-                ('title', models.CharField(help_text='Максимальная длинна 150 символов', max_length=150, verbose_name='заголовок')),
-                ('short_link', models.CharField(max_length=10, verbose_name='короткая ссылка')),
-                ('updated', models.DateTimeField(auto_now=True, verbose_name='обновлён')),
-                ('paste', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='versions', to='paste.paste', verbose_name='паста')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("version", models.IntegerField(verbose_name="номер версии")),
+                (
+                    "title",
+                    models.CharField(
+                        help_text="Максимальная длинна 150 символов",
+                        max_length=150,
+                        verbose_name="заголовок",
+                    ),
+                ),
+                (
+                    "short_link",
+                    models.CharField(
+                        max_length=10, verbose_name="короткая ссылка"
+                    ),
+                ),
+                (
+                    "updated",
+                    models.DateTimeField(
+                        auto_now=True, verbose_name="обновлён"
+                    ),
+                ),
+                (
+                    "paste",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="versions",
+                        to="paste.paste",
+                        verbose_name="паста",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'версия пасты',
-                'verbose_name_plural': 'версии паст',
+                "verbose_name": "версия пасты",
+                "verbose_name_plural": "версии паст",
             },
         ),
     ]

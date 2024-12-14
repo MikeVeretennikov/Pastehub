@@ -1,6 +1,3 @@
-import os
-import re
-
 from django.shortcuts import get_object_or_404, redirect, render
 
 from core.crypto import AESEncryption
@@ -14,7 +11,6 @@ from paste.models import Paste, PasteVersion, ProtectedPaste
 
 
 def create(request):
-
     form = PasteForm(request.POST or None)
     if request.method == "POST" and form.is_valid():
         instance = form.save(commit=False)
@@ -29,7 +25,16 @@ def create(request):
 
         if uploaded:
             instance.save()
-            upload_to_storage(f"pastes_version/{instance.id}_1", clear_content)
+            PasteVersion.objects.create(
+                paste=instance,
+                version=1,
+                title=instance.title,
+                short_link=instance.short_link,
+            )
+            upload_to_storage(
+                f"pastes/versions/{instance.id}_1",
+                clear_content,
+            )
 
         return redirect("paste:detail", short_link=instance.short_link)
 
@@ -60,10 +65,16 @@ def edit(request, short_link):
             .first()
         )
 
-        new_verison = last_version.version + 1
+        new_version = last_version.version + 1
+        PasteVersion.objects.create(
+            paste=paste,
+            version=new_version,
+            title=form.cleaned_data.get("title"),
+            short_link=paste.short_link,
+        )
         upload_to_storage(
-            f"pastes_version/{paste.id}_{new_verison}",
-            content,
+            f"pastes/versions/{paste.id}_{new_version}",
+            clear_content,
         )
         delete_from_storage(f"pastes/{paste.id}")
         upload_to_storage(f"pastes/{paste.id}", clear_content)
@@ -73,7 +84,7 @@ def edit(request, short_link):
         return redirect(
             "paste:version-detail",
             short_link=short_link,
-            version=new_verison,
+            version=new_version,
         )
 
     return render(
@@ -85,28 +96,11 @@ def edit(request, short_link):
 
 def detail(request, short_link, version=None):
     paste = get_object_or_404(Paste, short_link=short_link)
-    paste_uuid = paste.id
-
-    if version:
-        old_paste = (
-            PasteVersion.objects.filter(paste=paste)
-            .order_by("-updated")
-            .first()
-        )
-        content = get_from_storage(f"pastes_version/{paste_uuid}_{version}")
-
-        return render(
-            request=request,
-            template_name="paste/detail.html",
-            context={
-                "paste": paste,
-                "old_paste": old_paste,
-                "content": content,
-                "version": version,
-            },
-        )
-
     content = get_from_storage(f"pastes/{paste.id}")
+    selected_version = (
+        PasteVersion.objects.filter(paste=paste).order_by("-updated").first()
+    )
+    old_version = selected_version.version
 
     if paste.is_blocked and request.user != paste.author:
         return render(
@@ -114,10 +108,37 @@ def detail(request, short_link, version=None):
             template_name="paste/blocked.html",
         )
 
+    if version:
+        if version == selected_version.version:
+            return redirect("paste:detail", short_link=short_link)
+
+        selected_version = get_object_or_404(
+            PasteVersion,
+            version=version,
+            paste=paste,
+        )
+        content = get_from_storage(f"pastes/versions/{paste.id}_{version}")
+
+        return render(
+            request=request,
+            template_name="paste/detail.html",
+            context={
+                "paste": paste,
+                "old_version": old_version,
+                "content": content,
+                "selected_version": selected_version,
+            },
+        )
+
     return render(
         request=request,
         template_name="paste/detail.html",
-        context={"paste": paste, "content": content, "version": 1},
+        context={
+            "paste": paste,
+            "content": content,
+            "selected_version": selected_version,
+            "old_version": old_version,
+        },
     )
 
 
@@ -129,13 +150,9 @@ def delete(request, short_link):
 
     delete_from_storage(f"pastes/{paste.id}")
 
-    directory = "media/pastes_version/"
-    regex = re.compile(f"{paste.id}_?[0-9]+")
-
-    for filename in os.listdir(directory):
-        if regex.match(filename):
-            print(filename)
-            delete_from_storage(f"pastes_version/{filename}")
+    count_versions = PasteVersion.objects.filter(paste=paste).count()
+    for i in range(1, count_versions + 1):
+        delete_from_storage(f"pastes/versions/{paste.id}_{i}")
 
     paste.delete()
 

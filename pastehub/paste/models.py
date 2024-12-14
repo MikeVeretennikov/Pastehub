@@ -110,27 +110,10 @@ class Paste(BasePasteModel):
         verbose_name_plural = "пасты"
 
     def save(self, *args, **kwargs):
-        if self.pk is not None:
-            last_version = (
-                PasteVersion.objects.filter(paste=self)
-                .order_by("-updated")
-                .first()
-            )
-            next_version = last_version.version + 1 if last_version else 1
-        else:
-            next_version = 1
-
         if not self.short_link:
             self.short_link = generate_short_link()
 
         super().save(*args, **kwargs)
-
-        PasteVersion.objects.create(
-            paste=self,
-            version=next_version,
-            title=self.title,
-            short_link=self.short_link,
-        )
 
 
 class PasteVersion(models.Model):
@@ -139,6 +122,7 @@ class PasteVersion(models.Model):
         on_delete=models.CASCADE,
         verbose_name="паста",
         related_name="versions",
+        related_query_name="version",
     )
     version = models.IntegerField(verbose_name="номер версии")
     title = models.CharField(
@@ -177,4 +161,4 @@ class ProtectedPaste(BasePasteModel):
         return check_password(raw_password, self.password)
 
 
-__all__ = ["Category", "Paste", "ProtectedPaste"]
+__all__ = ["Category", "Paste", "ProtectedPaste", "PasteVersion"]

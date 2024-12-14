@@ -1,26 +1,37 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}{{ paste.title }}{% endblock %}
+{% block title %}{{ selected_version.title }}{% endblock %}
 
 {% block content %}
   <div class="container d-flex justify-content-center min-vh-100" xmlns="http://www.w3.org/1999/html">
     <div class="p-4 w-75">
 
       <div class="mb-3">
-        <h3 class="text-center">{{ paste.title }}</h3>
+        <h3 class="text-center">{{ selected_version.title }}</h3>
         {% if paste.is_blocked %}
           <p class="text-danger text-center"><strong>Заблокировано</strong></p>
         {% else %}
-          <p class="text-muted text-center">{{ paste.category }}</p>
+          {% if old_version != selected_version.version %}
+            <p class="text-muted text-center">
+              Исторический режим<br>
+              Версия: {{ selected_version.version }}
+            </p>
+          {% else %}
+            <p class="text-muted text-center">{{ paste.category }}</p>
+          {% endif %}
         {% endif %}
       </div>
 
-      <div class="mb-2 d-flex justify-content-between align-items-center">
+      <div>
         <small class="text-muted">Автор: <strong>{{ paste.author.username }}</strong> | Дата создания:
           <strong>{{ paste.created }}</strong>{% if paste.expired_duration %}<br>Срок существования:
             <strong>{{ paste.expired_duration }}</strong>{% endif %}</small>
+      </div>
 
+      <textarea class="form-control mb-2" type="text" rows="10" readonly>{{ content }}</textarea>
+
+      <div class="mb-2 d-flex justify-content-between align-items-center">
         <div>
           {% if paste.is_blocked %}
             <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#confirmReviewModal">
@@ -47,24 +58,10 @@
           <button class="btn btn-sm btn-dark dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
             История изменений
           </button>
-
           <ul class="dropdown-menu">
-            {% for old_paste in paste.versions.all %}
-              <a class="dropdown-item" href="{% url 'paste:version-detail' short_link=paste.short_link version=old_paste.version%}">
-                Версия пасты: {{ old_paste.version }}, Дата: {{ old_paste.updated }}
-              </a>
-            {% endfor %}
-          </ul>
-
-
-          <button class="btn btn-sm btn-dark dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-            История изменений
-          </button>
-
-          <ul class="dropdown-menu">
-            {% for old_paste in paste.versions.all %}
-              <a class="dropdown-item" href="{% url 'paste:version-detail' short_link=paste.short_link version=old_paste.version%}">
-                Версия пасты: {{ old_paste.version }}, Дата: {{ old_paste.updated }}
+            {% for el in paste.versions.all %}
+              <a class="dropdown-item" href="{% url 'paste:version-detail' short_link=paste.short_link version=el.version %}">
+                {% if el.version == old_version %}Последняя {% endif %}#{{ el.version }} ({{ el.updated }})
               </a>
             {% endfor %}
           </ul>
@@ -77,35 +74,30 @@
             </svg>
             Экспорт
           </button>
-
           <ul class="dropdown-menu">
-
-            <a class="dropdown-item" href="{% url 'export:source' paste.short_link version %}" download role="button">
+            <a class="dropdown-item" href="{% url 'export:source' paste.short_link selected_version.version %}" download role="button">
               Исходный формат
             </a>
-            <a class="dropdown-item" href="{% url 'export:json' paste.short_link version %}" download role="button">
+            <a class="dropdown-item" href="{% url 'export:json' paste.short_link selected_version.version %}" download role="button">
               JSON
             </a>
-            <a class="dropdown-item" href="{% url 'export:docx' paste.short_link version %}" download role="button">
+            <a class="dropdown-item" href="{% url 'export:docx' paste.short_link selected_version.version %}" download role="button">
               DOCX
             </a>
           </ul>
         </div>
 
+        {% if paste.author == request.user %}
+          <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+              <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
+              <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
+            </svg>
+            Удалить
+          </button>
+        {% endif %}
+
       </div>
-
-
-      <textarea class="form-control" type="text" rows="10" readonly>{{ content }}</textarea>
-
-      {% if paste.author == request.user %}
-        <button type="button" class="btn btn-outline-danger mt-3 col-2" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
-            <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
-            <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
-          </svg>
-          Удалить
-        </button>
-      {% endif %}
 
 
       {% if not paste.is_blocked %}
@@ -184,30 +176,6 @@
     </div>
   {% endif %}
 
-  <div class="modal fade" id="downloadModal" tabindex="-1" aria-labelledby="downloadModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="downloadModalLabel">Экспорт пасты</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          Выберите формат файла
-        </div>
-        <div class="modal-footer">
-          <a class="btn btn-outline-primary" href="{% url 'export:source' paste.id version %}" download role="button">
-            Исходный формат
-          </a>
-          <a class="btn btn-outline-warning" href="{% url 'export:json' paste.id version %}" download role="button">
-            JSON
-          </a>
-          <a class="btn btn-outline-info" href="{% url 'export:docx' paste.id version %}" download role="button">
-            DOCX
-          </a>
-        </div>
-      </div>
-    </div>
-  </div>
   <div class="modal fade" id="qrcodeModal" tabindex="-1" aria-labelledby="qrcodeModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
@@ -250,6 +218,6 @@
               return target.value;
           }
       });
-
+  </script>
 
 {% endblock %}

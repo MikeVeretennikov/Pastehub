@@ -3,11 +3,11 @@ import os
 import shutil
 
 from django.conf import settings
-from django.test import Client, override_settings, TestCase
+from django.test import override_settings, TestCase
 from django.urls import reverse
 
 from core.storage import upload_to_storage
-from paste.models import Category, Paste
+from paste.models import Category, Paste, PasteVersion
 
 
 @override_settings(
@@ -20,10 +20,18 @@ class TestViews(TestCase):
             f"pastes/{self.test_paste.id}",
             "Lorem ipsum dolor sit amet...",
         )
+        PasteVersion.objects.create(
+            paste=self.test_paste,
+            version=1,
+            title=self.test_paste.title,
+            short_link=self.test_paste.short_link,
+        )
+
         self.category = Category.objects.create(name="Aboba")
 
     def tearDown(self):
         Paste.objects.all().delete()
+        PasteVersion.objects.all().delete()
         shutil.rmtree(settings.MEDIA_ROOT)
 
     def test_correct_create_get(self):
@@ -39,15 +47,15 @@ class TestViews(TestCase):
             "category": 1,
         }
         # Создаем новую пасту
-        Client().post(reverse("paste:create"), new_paste_data)
+        self.client.post(reverse("paste:create"), new_paste_data)
 
         # Проверяем, что создалась паста в pastes/ и pastes_version/
         self.assertEqual(
-            len(os.listdir(settings.BASE_DIR / "media_test/pastes/")),
-            2,
+            len(os.listdir(settings.MEDIA_ROOT / "pastes")),
+            3,
         )
         self.assertEqual(
-            len(os.listdir(settings.BASE_DIR / "media_test/pastes_version/")),
+            len(os.listdir(settings.MEDIA_ROOT / "pastes/versions/")),
             1,
         )
 
@@ -55,7 +63,7 @@ class TestViews(TestCase):
         response = self.client.get(
             reverse("paste:detail", args=(self.test_paste.short_link,)),
         )
-
+        print(PasteVersion.objects.all())
         self.assertEqual(response.status_code, http.HTTPStatus.OK)
         self.assertTrue(response.context["paste"])
         self.assertTrue(response.context["content"])
