@@ -14,8 +14,8 @@ from paste.models import Paste, PasteVersion, ProtectedPaste
 
 
 def create(request):
-    form = PasteForm(request.POST or None)
 
+    form = PasteForm(request.POST or None)
     if request.method == "POST" and form.is_valid():
         instance = form.save(commit=False)
 
@@ -26,6 +26,7 @@ def create(request):
         clear_content = content.replace("\r\n", "\n").strip()
 
         uploaded = upload_to_storage(f"pastes/{instance.id}", clear_content)
+
         if uploaded:
             instance.save()
             upload_to_storage(f"pastes_version/{instance.id}_1", clear_content)
@@ -59,8 +60,9 @@ def edit(request, short_link):
             .first()
         )
 
+        new_verison = last_version.version + 1
         upload_to_storage(
-            f"pastes_version/{paste.id}_{last_version.version + 1}",
+            f"pastes_version/{paste.id}_{new_verison}",
             content,
         )
         delete_from_storage(f"pastes/{paste.id}")
@@ -68,7 +70,9 @@ def edit(request, short_link):
 
         form.save()
 
-        return redirect("paste:detail", short_link=short_link)
+        return redirect(
+            "paste:version-detail", short_link=short_link, version=new_verison,
+        )
 
     return render(
         request=request,
@@ -96,6 +100,7 @@ def detail(request, short_link, version=None):
                 "paste": paste,
                 "old_paste": old_paste,
                 "content": content,
+                "version": version,
             },
         )
 
@@ -110,7 +115,7 @@ def detail(request, short_link, version=None):
     return render(
         request=request,
         template_name="paste/detail.html",
-        context={"paste": paste, "content": content},
+        context={"paste": paste, "content": content, "version": 1},
     )
 
 

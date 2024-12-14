@@ -20,6 +20,7 @@
         <small class="text-muted">Автор: <strong>{{ paste.author.username }}</strong> | Дата создания:
           <strong>{{ paste.created }}</strong>{% if paste.expired_duration %}<br>Срок существования:
             <strong>{{ paste.expired_duration }}</strong>{% endif %}</small>
+
         <div>
           {% if paste.is_blocked %}
             <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#confirmReviewModal">
@@ -40,13 +41,7 @@
           {% endif %}
 
           {% if paste.author == request.user %}
-            <a class="btn btn-sm btn-primary" href="{% url 'paste:edit' paste.short_link %}">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
-                <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
-                <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
-              </svg>
-              Редактировать
-            </a>
+            <a class="btn btn-sm btn-primary" href="{% url 'paste:edit' paste.short_link %}">Редактировать</a>
           {% endif %}
 
           <button class="btn btn-sm btn-dark dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -71,13 +66,14 @@
           </button>
 
           <ul class="dropdown-menu">
-            <a class="dropdown-item" href="{% url 'export:source' paste.short_link %}" download role="button">
+
+            <a class="dropdown-item" href="{% url 'export:source' paste.short_link version %}" download role="button">
               Исходный формат
             </a>
-            <a class="dropdown-item" href="{% url 'export:json' paste.short_link %}" download role="button">
+            <a class="dropdown-item" href="{% url 'export:json' paste.short_link version %}" download role="button">
               JSON
             </a>
-            <a class="dropdown-item" href="{% url 'export:docx' paste.short_link %}" download role="button">
+            <a class="dropdown-item" href="{% url 'export:docx' paste.short_link version %}" download role="button">
               DOCX
             </a>
           </ul>
@@ -175,6 +171,30 @@
     </div>
   {% endif %}
 
+  <div class="modal fade" id="downloadModal" tabindex="-1" aria-labelledby="downloadModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="downloadModalLabel">Экспорт пасты</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          Выберите формат файла
+        </div>
+        <div class="modal-footer">
+          <a class="btn btn-outline-primary" href="{% url 'export:source' paste.id version %}" download role="button">
+            Исходный формат
+          </a>
+          <a class="btn btn-outline-warning" href="{% url 'export:json' paste.id version %}" download role="button">
+            JSON
+          </a>
+          <a class="btn btn-outline-info" href="{% url 'export:docx' paste.id version %}" download role="button">
+            DOCX
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
   <div class="modal fade" id="qrcodeModal" tabindex="-1" aria-labelledby="qrcodeModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
