@@ -47,7 +47,20 @@
           <button class="btn btn-sm btn-dark dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
             История изменений
           </button>
-          
+
+          <ul class="dropdown-menu">
+            {% for old_paste in paste.versions.all %}
+              <a class="dropdown-item" href="{% url 'paste:version-detail' short_link=paste.short_link version=old_paste.version%}">
+                Версия пасты: {{ old_paste.version }}, Дата: {{ old_paste.updated }}
+              </a>
+            {% endfor %}
+          </ul>
+
+
+          <button class="btn btn-sm btn-dark dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            История изменений
+          </button>
+
           <ul class="dropdown-menu">
             {% for old_paste in paste.versions.all %}
               <a class="dropdown-item" href="{% url 'paste:version-detail' short_link=paste.short_link version=old_paste.version%}">
@@ -238,18 +251,5 @@
           }
       });
 
-      clipboard.on('success', function (e) {
-          const currentLabel = button.innerHTML;
 
-          if (button.innerHTML === 'Скопировано!') {
-              return;
-          }
-
-          button.innerHTML = 'Скопировано!';
-
-          setTimeout(function () {
-              button.innerHTML = currentLabel;
-          }, 3000)
-      });
-  </script>
 {% endblock %}
