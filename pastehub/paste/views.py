@@ -71,7 +71,9 @@ def edit(request, short_link):
         form.save()
 
         return redirect(
-            "paste:version-detail", short_link=short_link, version=new_verison,
+            "paste:version-detail",
+            short_link=short_link,
+            version=new_verison,
         )
 
     return render(
