@@ -52,6 +52,7 @@ class ProtectedPasteForm(BootstrapFormMixin, forms.ModelForm):
         fields = [
             model.title.field.name,
             model.expired_duration.field.name,
+            model.language.field.name,
         ]
 
     def clean_content(self):
