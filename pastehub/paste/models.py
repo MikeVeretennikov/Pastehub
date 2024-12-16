@@ -28,16 +28,16 @@ LANGUAGE_CHOICES = [
     ("xml", "XML"),
     ("json", "JSON"),
     ("yaml", "YAML"),
-    ("typescript", "TypeScript"), 
+    ("typescript", "TypeScript"),
     ("rust", "Rust"),
-    ("kotlin", "Kotlin"),  
+    ("kotlin", "Kotlin"),
     ("dart", "Dart"),
-    ("scala", "Scala"),  
-    ("shell", "Shell"),  
-    ("powershell", "PowerShell"), 
-    ("haskell", "Haskell"),  
+    ("scala", "Scala"),
+    ("shell", "Shell"),
+    ("powershell", "PowerShell"),
+    ("haskell", "Haskell"),
     ("elixir", "Elixir"),
-    ("text", "Plain Text"),  
+    ("text", "Plain Text"),
 ]
 
 
