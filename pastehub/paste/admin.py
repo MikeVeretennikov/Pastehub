@@ -60,6 +60,15 @@ class ProtectedPasteAdmin(admin.ModelAdmin):
 
 @admin.register(PasteVersion)
 class PasteVersionAdmin(admin.ModelAdmin):
+    list_display = [
+        PasteVersion.paste.field.name,
+        PasteVersion.version.field.name,
+    ]
+
+    list_filter = [
+        PasteVersion.paste.field.name,
+    ]
+
     readonly_fields = [
         PasteVersion.paste.field.name,
     ]

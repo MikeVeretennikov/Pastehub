@@ -29,6 +29,7 @@ class TestForms(TestCase):
             "title": "Test title",
             "content": "Test content",
             "category": 1,
+            "language": "text",
         }
 
         response = self.client.post(
