@@ -9,6 +9,38 @@ from django.utils import timezone
 from core.utils import generate_short_link
 
 
+LANGUAGE_CHOICES = [
+    ("markup", "Markup"),
+    ("css", "CSS"),
+    ("clike", "C-like"),
+    ("javascript", "JavaScript"),
+    ("python", "Python"),
+    ("java", "Java"),
+    ("csharp", "C#"),
+    ("cpp", "C++"),
+    ("php", "PHP"),
+    ("ruby", "Ruby"),
+    ("swift", "Swift"),
+    ("go", "Go"),
+    ("bash", "Bash"),
+    ("sql", "SQL"),
+    ("html", "HTML"),
+    ("xml", "XML"),
+    ("json", "JSON"),
+    ("yaml", "YAML"),
+    ("typescript", "TypeScript"), 
+    ("rust", "Rust"),
+    ("kotlin", "Kotlin"),  
+    ("dart", "Dart"),
+    ("scala", "Scala"),  
+    ("shell", "Shell"),  
+    ("powershell", "PowerShell"), 
+    ("haskell", "Haskell"),  
+    ("elixir", "Elixir"),
+    ("text", "Plain Text"),  
+]
+
+
 class Category(models.Model):
     name = models.CharField(
         max_length=150,
@@ -46,6 +78,13 @@ class BasePasteModel(models.Model):
         max_length=10,
         unique=True,
         verbose_name="короткая ссылка",
+    )
+    language = models.CharField(
+        "язык для подсветки",
+        help_text="выберите язык для подсветки",
+        max_length=50,
+        choices=LANGUAGE_CHOICES,
+        default="text",
     )
     expired_duration = models.DurationField(
         choices=EXPIRED_LIMIT,

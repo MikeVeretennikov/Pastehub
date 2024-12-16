@@ -19,6 +19,7 @@ class PasteForm(BootstrapFormMixin, forms.ModelForm):
             model.category.field.name,
             model.expired_duration.field.name,
             model.is_published.field.name,
+            model.language.field.name,
         ]
 
         widgets = {

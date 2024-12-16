@@ -9,6 +9,11 @@
     <link href="{% static 'css/footer.css' %}" rel="stylesheet">
     <link rel="icon" href="{% static 'img/icon.png' %}" type="image">
     <link rel="icon" href="{% static 'img/icon.png' %}" type="image/x-icon">
+
+    <!-- Подключение Prism -->
+    <link rel="stylesheet" href={% static 'css/prism.css' %} />
+    <script src={% static 'js/prism.js' %}></script>
+    
     <title>{% block title %}PasteHub{% endblock %}</title>
   </head>
   <body>

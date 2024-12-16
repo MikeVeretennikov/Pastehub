@@ -45,6 +45,7 @@ class TestViews(TestCase):
             "title": "Test title1",
             "content": "Test content",
             "category": 1,
+            "language": "text",
         }
         self.client.post(reverse("paste:create"), new_paste_data)
 

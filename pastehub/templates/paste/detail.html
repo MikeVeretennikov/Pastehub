@@ -29,7 +29,7 @@
             <strong>{{ paste.expired_duration }}</strong>{% endif %}</small>
       </div>
 
-      <textarea class="form-control mb-2" type="text" rows="10" readonly>{{ content }}</textarea>
+      <pre><code class="language-{{ paste.language }}">{{ content }}</code></pre>
 
       <div class="mb-2 d-flex justify-content-between align-items-center">
         <div>
