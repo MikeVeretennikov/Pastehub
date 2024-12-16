@@ -80,8 +80,8 @@ class BasePasteModel(models.Model):
         verbose_name="короткая ссылка",
     )
     language = models.CharField(
-        "язык для подсветки",
-        help_text="выберите язык для подсветки",
+        verbose_name="язык для подсветки",
+        help_text="Выберите язык для подсветки",
         max_length=50,
         choices=LANGUAGE_CHOICES,
         default="text",

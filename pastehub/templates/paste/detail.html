@@ -1,3 +1,4 @@
+
 {% extends "base.html" %}
 {% load static %}
 
@@ -27,7 +28,7 @@
         <small class="text-muted">Автор: <strong>{{ paste.author.username }}</strong> | Дата создания:
           <strong>{{ paste.created }}</strong>{% if paste.expired_duration %}<br>Срок существования:
             <strong>{{ paste.expired_duration }}</strong>{% endif %}</small>
-        <small class="text-muted">Syntax: <strong>{{ paste.language }}</strong></small>
+        <small class="text-muted"> | Стиль: <strong>{{ paste.language }}</strong></small>
       </div>
 
       <pre><code class="language-{{ paste.language }}">{{ content }}</code></pre>
