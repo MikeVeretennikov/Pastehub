@@ -1,11 +1,20 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 
-{% load static %}
+{% block title %}Аккаунт успешно активирован{% endblock %}
 
-{% block content %}
-<div class="w-25 p-3 mx-auto">
-    <h1>Аккаунт активирован!</h1>
-    <p>Вы успешно активировали свой аккаунт.</p>
-    <a href="{% url 'auth:login' %}">Войти</a>
-</div>
+{% block clean_content %}
+  <body>
+    <main>
+      <div class="container text-center my-5 min-vh-100 d-flex align-items-center justify-content-center">
+        <div class="p-4">
+          <div class="card-body">
+            <h1 class="display-4 text-success mb-3">Аккаунт успешно активирован</h1>
+            <p class="lead mb-4">Ваш аккаунт успешно активирован. Теперь вы можете пользоваться всеми функциями нашего
+              сайта.</p>
+            <a href="{% url 'auth:login' %}" class="btn btn-lg btn-outline-secondary mt-2">Войти</a>
+          </div>
+        </div>
+      </div>
+    </main>
+  </body>
 {% endblock %}

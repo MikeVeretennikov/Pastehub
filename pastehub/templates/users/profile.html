@@ -3,47 +3,44 @@
 {% load static %}
 
 {% block content %}
-  <div class="container rounded bg-white mt-5 mb-5">
+
+
+  <div class="container d-flex align-items-center justify-content-center my-5">
+
     <div class="row">
-      <div class="col-md-3 border-right">
-        <div class="d-flex flex-column align-items-center text-center p-3 py-5">
+      <div class="col-4">
+        <div class="d-flex flex-column align-items-center text-center py-5">
           {% if user.image %}
             <img class="rounded-circle mt-5" width="200" height="200" src="{{ user.image.url }}">
           {% else %}
             <img class="rounded-circle mt-5" width="200" height="200" src="{% static 'img/anonymous-user.jpg' %}">
           {% endif %}
-          <span class="text-black-50">{{ user.email }}</span><span> </span></div>
+          <span class="text-black-50">{{ user.username }}</span><span> </span></div>
       </div>
 
-      <div class="col-md-5 border-right">
-        <div class="p-3 py-5">
+      <div class="col-8">
+        <div class="py-5">
           <div class="d-flex justify-content-between align-items-center mb-3">
-            <h4 class="text-right">Настройки профиля</h4>
+            <h3 class="text-right">Редактирование профиля</h3>
           </div>
 
+          <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {% include "includes/form.html" %}
+
+            <button class="btn btn-primary profile-button w-100" type="submit">Сохранить</button>
+          </form>
 
           {% for message in messages %}
-            <div class="alert alert-success alert-dismissible {{ message.tags }}" role="alert">
+            <div class="my-2 alert alert-success alert-dismissible {{ message.tags }}" role="alert">
               <div>{{ message | safe }}</div>
               <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
           {% endfor %}
 
-
-          <form method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-
-            {% include "includes/form.html" with form=profile_form %}
-            <div class="mt-5 text-center">
-              <button class="btn btn-primary profile-button" type="submit">Сохранить</button>
-            </div>
-          </form>
-
-
         </div>
       </div>
     </div>
   </div>
-
 
 {% endblock %}

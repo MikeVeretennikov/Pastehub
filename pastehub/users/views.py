@@ -40,17 +40,17 @@ def signup(request):
             )
 
             send_mail(
-                subject="Активация",
+                subject="Активация аккаунта",
                 message=activate_url,
+                html_message=f'<a href="{activate_url}">{activate_url}</a>',
                 from_email=django.conf.settings.DEFAULT_FROM_EMAIL,
                 recipient_list=[user.email],
-                fail_silently=True,
             )
 
             return render(
                 request,
                 "auth/activation_sent.html",
-                {"title": "Активация аккаунта"},
+                {"title": "Активация аккаунта", "user": user},
             )
 
     return render(request, "auth/signup.html", {"form": form})
@@ -65,6 +65,7 @@ def activate(request, uidb64, token):
         and user.date_joined + timedelta(hours=12) > timezone.now()
     ):
         user.is_active = True
+        user.confirmation_token = None
         user.save()
 
         return render(
@@ -103,25 +104,21 @@ def user_detail(request, username):
 
 @login_required
 def profile_edit(request):
+    user = request.user
     profile_form = users.forms.ProfileForm(
         request.POST or None,
         request.FILES or None,
-        instance=request.user,
+        instance=user,
     )
+
     if request.method == "POST" and profile_form.is_valid():
         profile_form.save()
-        messages.success(request, "Все прошло успешно")
-
-    user_info = {
-        "image": request.user.image,
-        "username": request.user.username,
-        "email": request.user.email,
-    }
+        messages.success(request, "Профиль успешно сохранён")
 
     return render(
         request,
         "users/profile.html",
-        {"profile_form": profile_form, "user": user_info},
+        {"form": profile_form, "user": user},
     )
 
 

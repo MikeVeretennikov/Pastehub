@@ -1,8 +1,21 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 
-{% block content %}
-<div class="w-25 p-3 mx-auto">
-    <h3>Ссылка активации просрочена!</h3>
-    <p>Пожалуйста повторите регистрацию.</p>
-</div>
+{% block title %}Срок действия ссылки истек{% endblock %}
+
+{% block clean_content %}
+  <body>
+    <main>
+      <div class="container text-center my-5 min-vh-100 d-flex align-items-center justify-content-center">
+        <div class="p-4">
+          <div class="card-body">
+            <h1 class="display-4 text-danger mb-3">Срок действия ссылки истек</h1>
+            <p class="lead mt-4 mb-0">К сожалению, срок действия ссылки активации аккаунта истек</p>
+            <p class="lead mt-0 mb-4">Пожалуйста, обратитесь в поддержку <a href="mailto:support@paste-hub.ru">support@paste-hub.ru</a>
+            </p>
+            <a href="{% url 'paste:create' %}" class="link-secondary">На главную</a>
+          </div>
+        </div>
+      </div>
+    </main>
+  </body>
 {% endblock %}

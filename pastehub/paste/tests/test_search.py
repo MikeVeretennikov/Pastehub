@@ -61,7 +61,7 @@ class TestViews(TestCase):
         response = self.client.get(
             f'{reverse("paste:search")}?q=wordnotinpastes&page=1.5',
         )
-        self.assertEqual(response.status_code, http.HTTPStatus.NOT_FOUND)
+        self.assertEqual(response.status_code, http.HTTPStatus.BAD_REQUEST)
 
 
 __all__ = []

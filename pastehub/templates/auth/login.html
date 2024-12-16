@@ -1,19 +1,23 @@
 {% extends "base.html" %}
-{% block content %}
-<div class="container d-flex align-items-center justify-content-center">
-    <div class="p-4" style="width: 100%; max-width: 400px;">
-        {% for message in messages %}
-            <div class="alert alert-success">
-                {{ message }}
-            </div>
-        {% endfor %}
-        <form method="post">
-            {% csrf_token %}
-            {% include 'includes/form.html' %}
-            <button class="btn btn-primary" type="submit">Войти</button>
-            <a href="{% url 'auth:password_reset' %}">Забыли пароль?</a>
-            <p>Нет аккаунта? <a href="{% url 'auth:signup' %}">Зарегистрироваться</a></p>
-        </form>
-    </div>
-</div>
+{% load static %}
+
+
+{% block clean_content %}
+  <body class="text-center">
+    <link href="{% static 'css/signin.css' %}" rel="stylesheet">
+    <main class="form-signin">
+      <form method="post">
+        <img class="mb-4" src="{% static 'img/favicon/favicon.svg' %}" alt="" width="96" height="96">
+        <h1 class="h3 mb-3 fw-normal">Войти</h1>
+
+        {% csrf_token %}
+        {% include 'includes/form_floating.html' %}
+        <button class="w-100 btn btn-lg btn-primary mb-2" type="submit">Войти</button>
+
+        <a href="{% url 'auth:password_reset' %}">Забыли пароль?</a>
+        <p>Нет аккаунта? <a href="{% url 'auth:signup' %}">Зарегистрироваться</a></p>
+        <p class="mt-5 mb-3 text-muted">© 2024 PasteHub</p>
+      </form>
+    </main>
+  </body>
 {% endblock %}

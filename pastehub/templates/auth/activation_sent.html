@@ -1,8 +1,11 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="w-25 p-3 mx-auto">
-    <h3>Ссылка активации отправлена, проверьте вашу почту.</h3>
-    <a href="/">На главную</a>
-</div>
+  <div class="container d-flex justify-content-center">
+    <div class="pt-4 w-50">
+      <h3>Ссылка активации отправлена</h3>
+      <p>Ссылка активации аккаунта была отправлена на электронную почту <strong>{{ user.email }}</strong><br>Проверьте папку спам</p>
+      <a href="/">На главную</a>
+    </div>
+  </div>
 {% endblock %}

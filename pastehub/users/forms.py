@@ -37,8 +37,6 @@ class ProfileForm(BootstrapFormMixin, UserChangeForm):
             model.email.field.name,
             model.username.field.name,
             model.image.field.name,
-            model.first_name.field.name,
-            model.last_name.field.name,
         )
 
         widgets = {model.image.field.name: forms.ClearableFileInput()}
