@@ -11,21 +11,22 @@
     <link rel="icon" href="{% static 'img/icon.png' %}" type="image/x-icon">
 
     <!-- Подключение Prism -->
-    <link rel="stylesheet" href={% static 'css/prism.css' %} />
+    <link rel="stylesheet" href={% static 'css/prism.css' %}/>
     <script src={% static 'js/prism.js' %}></script>
-    
+
     <title>{% block title %}PasteHub{% endblock %}</title>
   </head>
   <body>
     <div class="wrapper">
-    {% block clean_content %}
-      {% include 'includes/header.html' %}
-      <main class="container">
-        {% block content %}Контента не будет{% endblock %}
-        <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
-      </main>
-      {% include 'includes/footer.html' %}
-    {% endblock %}
+      {% block clean_content %}
+        {% include 'includes/header.html' %}
+        <main class="container">
+          {% block content %}Контента не будет{% endblock %}
+          <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+          <script src={% static 'js/prism.js' %}></script>
+        </main>
+        {% include 'includes/footer.html' %}
+      {% endblock %}
     </div>
   </body>
 </html>
