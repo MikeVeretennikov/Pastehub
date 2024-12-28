@@ -1,6 +1,6 @@
 # PasteHub
 
-![Pipeline Status](https://gitlab.crja72.ru/django/2024/autumn/course/projects/team-8/badges/main/pipeline.svg)
+![Pipeline Status](https://github.com/MikeVeretennikov/Pastehub/actions/workflows/WORKFLOW-FILE/badge.svg)
 
 # Инструкция по запуску проекта
 
