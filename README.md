@@ -1,6 +1,5 @@
 # PasteHub
 
-![Pipeline Status](https://github.com/MikeVeretennikov/Pastehub/actions/workflows/main.yml/badge.svg)
 
 # Инструкция по запуску проекта
 
